@@ -30,7 +30,11 @@ creds = Credentials.from_service_account_file(
 
 client = gspread.authorize(creds)
 
-sheet = client.open("Distributor Bakpau").worksheet("Data")
+spreadsheet = client.open_by_url(
+    "https://docs.google.com/spreadsheets/d/157PtqTU5MmkF5Zf1KiPPsIBwvomXOoyVieifrYaz6M4/edit#gid=0"
+)
+
+sheet = spreadsheet.worksheet("Data")
 
 # =====================================================
 # VIDEO BACKGROUND
@@ -89,20 +93,6 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
     margin-bottom: 25px;
     border: 1px solid rgba(255,255,255,0.1);
     backdrop-filter: blur(10px);
-}}
-
-.invoice-box {{
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    color: black !important;
-}}
-
-.invoice-box h1,
-.invoice-box h2,
-.invoice-box h3,
-.invoice-box p {{
-    color: black !important;
 }}
 
 .stButton button {{
