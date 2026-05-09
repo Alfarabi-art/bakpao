@@ -1,20 +1,23 @@
 import streamlit as st
+import gspread
 from google.oauth2.service_account import Credentials
 
-try:
+scope = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
-    scope = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
+creds = Credentials.from_service_account_file(
+    "credentials.json",
+    scopes=scope
+)
 
-    creds = Credentials.from_service_account_file(
-        "credentials.json",
-        scopes=scope
-    )
+client = gspread.authorize(creds)
 
-    st.success("Credentials berhasil dibaca!")
+st.success("Berhasil login Google!")
 
-except Exception as e:
+spreadsheet = client.open_by_url(
+    "https://docs.google.com/spreadsheets/d/157PtqTU5MmkF5Zf1KiPPsIBwvomXOoyVieifrYaz6M4/edit#gid=0"
+)
 
-    st.error(e)
+st.success("Spreadsheet berhasil dibuka!")
