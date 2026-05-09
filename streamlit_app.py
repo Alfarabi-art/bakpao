@@ -387,7 +387,8 @@ if st.button("💾 Simpan Data Pembeli"):
                 f"{item['Produk']} ({item['Qty']} pcs)"
             )
 
-        gabungan_produk = ", ".join(
+        # PRODUK TURUN KE BAWAH BIAR RAPI
+        gabungan_produk = "\n".join(
             daftar_produk
         )
 
@@ -404,6 +405,16 @@ if st.button("💾 Simpan Data Pembeli"):
             grand_jual,
             status
         ])
+
+        # AUTO WRAP TEXT
+        last_row = len(sheet.get_all_values())
+
+        sheet.format(
+            f"C{last_row}",
+            {
+                "wrapStrategy": "WRAP"
+            }
+        )
 
         st.success(
             "Distribusi berhasil disimpan"
@@ -459,7 +470,7 @@ else:
                     key=f"lunas_{i}"
                 ):
 
-                    # update kolom status (kolom ke-6)
+                    # UPDATE STATUS DI SHEETS
                     sheet.update_cell(
                         i + 2,
                         6,
