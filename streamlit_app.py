@@ -406,13 +406,18 @@ if st.button("💾 Simpan Data Pembeli"):
             status
         ])
 
-        # AUTO WRAP TEXT
+        # =====================================================
+        # FORMAT SHEET
+        # =====================================================
+
         last_row = len(sheet.get_all_values())
 
         sheet.format(
-            f"C{last_row}",
+            f"A{last_row}:F{last_row}",
             {
-                "wrapStrategy": "WRAP"
+                "wrapStrategy": "WRAP",
+                "horizontalAlignment": "CENTER",
+                "verticalAlignment": "MIDDLE"
             }
         )
 
@@ -470,7 +475,6 @@ else:
                     key=f"lunas_{i}"
                 ):
 
-                    # UPDATE STATUS DI SHEETS
                     sheet.update_cell(
                         i + 2,
                         6,
