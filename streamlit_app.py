@@ -16,7 +16,7 @@ st.set_page_config(
 # VIDEO BACKGROUND
 # =====================================================
 
-VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpau/main/bg.mp4"
+VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpao/main/bg.mp4"
 
 # =====================================================
 # CSS
