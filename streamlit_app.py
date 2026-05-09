@@ -25,16 +25,21 @@ VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpao/main/bg.mp4"
 st.markdown(f"""
 <style>
 
-/* HILANGKAN HEADER */
+/* HEADER */
 [data-testid="stHeader"] {{
     background: transparent;
 }}
 
-/* VIDEO BACKGROUND */
-#bg-video {{
+/* APP */
+.stApp {{
+    background: transparent;
+}}
+
+/* VIDEO */
+video {{
     position: fixed;
-    right: 0;
-    bottom: 0;
+    top: 0;
+    left: 0;
     min-width: 100%;
     min-height: 100%;
     object-fit: cover;
@@ -42,7 +47,7 @@ st.markdown(f"""
 }}
 
 /* OVERLAY */
-.video-overlay {{
+.overlay {{
     position: fixed;
     top:0;
     left:0;
@@ -54,44 +59,38 @@ st.markdown(f"""
 
 /* CONTAINER */
 .block-container {{
-    padding-top:20px;
-    padding-bottom:50px;
+    padding-top: 2rem;
+    padding-bottom: 3rem;
 }}
 
 /* TEXT */
-h1,h2,h3,h4,h5,h6 {{
-    color:white !important;
-}}
-
-label,p {{
+h1,h2,h3,h4,h5,h6,p,label,span {{
     color:white !important;
 }}
 
 /* PRODUCT CARD */
 .product-box {{
-    background:rgba(255,255,255,0.08);
-    padding:20px;
-    border-radius:20px;
-    margin-bottom:25px;
-    border:1px solid rgba(255,255,255,0.1);
-    backdrop-filter:blur(10px);
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
 }}
 
 /* INVOICE */
 .invoice-box {{
-    background:white;
-    color:black !important;
-    padding:30px;
-    border-radius:20px;
-    margin-top:20px;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    color: black !important;
 }}
 
 .invoice-box h1,
 .invoice-box h2,
 .invoice-box h3,
-.invoice-box h4,
 .invoice-box p {{
-    color:black !important;
+    color: black !important;
 }}
 
 /* BUTTON */
@@ -124,34 +123,29 @@ label,p {{
 
 [data-testid="stDownloadButton"] button:hover {{
     background:#00b248 !important;
-    color:white !important;
 }}
 
 /* MOBILE */
 @media(max-width:768px) {{
 
     .block-container {{
-        padding-left:15px;
-        padding-right:15px;
+        padding-left: 15px;
+        padding-right: 15px;
     }}
 
     h1 {{
-        font-size:34px !important;
-    }}
-
-    h2 {{
-        font-size:24px !important;
+        font-size: 34px !important;
     }}
 
 }}
 
 </style>
 
-<video autoplay muted loop id="bg-video">
+<video autoplay muted loop playsinline>
     <source src="{VIDEO_URL}" type="video/mp4">
 </video>
 
-<div class="video-overlay"></div>
+<div class="overlay"></div>
 
 """, unsafe_allow_html=True)
 
@@ -251,7 +245,7 @@ with col4:
     )
 
 # =====================================================
-# FORM INPUT
+# INPUT
 # =====================================================
 
 st.write("")
@@ -427,9 +421,7 @@ if st.session_state.invoice_terakhir is not None:
     st.markdown(f"""
     <div class="invoice-box">
 
-    <h2>
-    🥟 Distributor Bakpau
-    </h2>
+    <h2>🥟 Distributor Bakpau</h2>
 
     <hr>
 
@@ -467,9 +459,7 @@ st.markdown("## 📊 Riwayat Distribusi")
 
 if len(st.session_state.riwayat) == 0:
 
-    st.info(
-        "Belum ada data distribusi"
-    )
+    st.info("Belum ada data distribusi")
 
 else:
 
@@ -482,10 +472,6 @@ else:
         use_container_width=True,
         height=400
     )
-
-    # =====================================================
-    # UPDATE STATUS
-    # =====================================================
 
     st.write("")
     st.markdown("## ✅ Update Status Pembayaran")
@@ -514,19 +500,13 @@ else:
 
                     st.session_state.riwayat[i]["Status"] = "Sudah Bayar"
 
-                    st.success(
-                        f"{item['Nama']} sudah lunas"
-                    )
-
                     st.rerun()
 
             else:
 
                 st.success("Lunas")
 
-    # =====================================================
     # DOWNLOAD CSV
-    # =====================================================
 
     csv = df.to_csv(
         index=False
