@@ -7,7 +7,7 @@ from datetime import datetime
 # =====================================================
 
 st.set_page_config(
-    page_title="Distributor Bakpau",
+    page_title="Bakpao Ceu Mumun",
     page_icon="🥟",
     layout="wide"
 )
@@ -155,27 +155,27 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
 
 produk_data = {
 
-    "Bakpau Coklat": {
+    "Bakpao Coklat": {
         "harga": 5000,
         "gambar": "images/cokelat.jpg"
     },
 
-    "Bakpau Ayam": {
+    "Bakpao Ayam": {
         "harga": 7000,
         "gambar": "images/ayam.jpg"
     },
 
-    "Bakpau Keju": {
+    "Bakpao Keju": {
         "harga": 5000,
         "gambar": "images/keju.jpg"
     },
 
-    "Bakpau Kacang": {
+    "Bakpao Kacang": {
         "harga": 5000,
         "gambar": "images/kacang.jpg"
     },
 
-    "Bakpau Kentang": {
+    "Bakpao Kentang": {
         "harga": 5000,
         "gambar": "images/kentang.jpg"
     }
@@ -196,7 +196,7 @@ if "invoice_terakhir" not in st.session_state:
 # HEADER
 # =====================================================
 
-st.title("🥟 Distributor Bakpau")
+st.title("🥟 Bakpao Ceu Mumun")
 st.subheader("Sistem Distribusi & Pendapatan UMKM")
 
 # =====================================================
