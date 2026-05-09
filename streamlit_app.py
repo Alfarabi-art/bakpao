@@ -30,7 +30,7 @@ creds = Credentials.from_service_account_file(
 
 client = gspread.authorize(creds)
 
-sheet = client.open("Distributor Bakpau").worksheet("Data")
+sheet = client.open("Distributor Bakpao").worksheet("Data")
 
 # =====================================================
 # VIDEO BACKGROUND
