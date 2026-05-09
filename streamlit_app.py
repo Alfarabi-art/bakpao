@@ -4,18 +4,20 @@ from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
 
-# =========================================
-# PAGE CONFIG
-# =========================================
+# =====================================================
+# CONFIG
+# =====================================================
+
 st.set_page_config(
-    page_title="Distributor Bakpao",
+    page_title="Bakpao Ceu Mumun",
     page_icon="🥟",
     layout="wide"
 )
 
-# =========================================
+# =====================================================
 # GOOGLE SHEETS CONNECT
-# =========================================
+# =====================================================
+
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
@@ -34,319 +36,455 @@ spreadsheet = client.open_by_url(
 
 sheet = spreadsheet.worksheet("Data")
 
-# =========================================
+# =====================================================
 # VIDEO BACKGROUND
-# =========================================
+# =====================================================
+
 VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpao/main/bg.mp4"
 
-st.markdown(
-    f"""
-    <style>
+# =====================================================
+# CSS
+# =====================================================
 
-    .stApp {{
-        background: transparent;
-    }}
+st.markdown(f"""
+<style>
 
-    video {{
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%;
-        min-height: 100%;
-        object-fit: cover;
-        z-index: -100;
-    }}
+[data-testid="stHeader"] {{
+    background: transparent;
+}}
 
-    .main {{
-        background: rgba(0,0,0,0);
-    }}
+.stApp {{
+    background: transparent;
+}}
+
+video {{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}}
+
+.overlay {{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.65);
+    z-index:-1;
+}}
+
+.block-container {{
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}}
+
+h1,h2,h3,h4,h5,h6,p,label,span {{
+    color:white !important;
+}}
+
+.product-box {{
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}}
+
+.invoice-box {{
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    color: black !important;
+}}
+
+.invoice-box h1,
+.invoice-box h2,
+.invoice-box h3,
+.invoice-box p {{
+    color: black !important;
+}}
+
+.stButton button {{
+    width:100%;
+    background:#ff4b4b;
+    color:white;
+    border:none;
+    border-radius:15px;
+    padding:14px;
+    font-size:17px;
+    font-weight:bold;
+}}
+
+.stButton button:hover {{
+    background:#ff2e2e;
+}}
+
+[data-testid="stDownloadButton"] button {{
+    width:100%;
+    background:#00c853 !important;
+    color:white !important;
+    border:none !important;
+    border-radius:15px !important;
+    padding:14px !important;
+    font-size:17px !important;
+    font-weight:bold !important;
+}}
+
+[data-testid="stDownloadButton"] button:hover {{
+    background:#00b248 !important;
+}}
+
+@media(max-width:768px) {{
 
     .block-container {{
-        padding-top: 2rem;
-        padding-bottom: 2rem;
+        padding-left: 15px;
+        padding-right: 15px;
     }}
 
-    h1, h2, h3, h4, h5, h6, p, label {{
-        color: white !important;
+    h1 {{
+        font-size: 34px !important;
     }}
 
-    .glass {{
-        background: rgba(255,255,255,0.12);
-        border-radius: 25px;
-        padding: 20px;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
-        margin-bottom: 20px;
-    }}
+}}
 
-    .produk-card {{
-        background: rgba(255,255,255,0.12);
-        padding: 15px;
-        border-radius: 25px;
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.2);
-        margin-bottom: 20px;
-    }}
+</style>
 
-    .stButton>button {{
-        width: 100%;
-        border-radius: 15px;
-        border: none;
-        background: linear-gradient(45deg,#ff9800,#ff5722);
-        color: white;
-        font-weight: bold;
-        height: 3em;
-    }}
+<video autoplay muted loop playsinline>
+    <source src="{VIDEO_URL}" type="video/mp4">
+</video>
 
-    .stDownloadButton>button {{
-        width: 100%;
-        border-radius: 15px;
-        border: none;
-        background: linear-gradient(45deg,#4caf50,#2e7d32);
-        color: white;
-        font-weight: bold;
-        height: 3em;
-    }}
+<div class="overlay"></div>
 
-    div[data-baseweb="select"] > div {{
-        background-color: rgba(255,255,255,0.15);
-        color: white;
-        border-radius: 15px;
-    }}
+""", unsafe_allow_html=True)
 
-    input {{
-        background-color: rgba(255,255,255,0.15) !important;
-        color: white !important;
-        border-radius: 15px !important;
-    }}
-
-    @media (max-width: 768px) {{
-
-        .block-container {{
-            padding: 1rem;
-        }}
-
-        h1 {{
-            font-size: 30px !important;
-        }}
-
-    }}
-
-    </style>
-
-    <video autoplay muted loop>
-        <source src="{VIDEO_URL}" type="video/mp4">
-    </video>
-
-    """,
-    unsafe_allow_html=True
-)
-
-# =========================================
+# =====================================================
 # DATA PRODUK
-# =========================================
+# =====================================================
+
 produk_data = {
+
     "Bakpao Coklat": {
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1504674900247-0877df9cc836"
+        "gambar": "images/cokelat.jpg"
     },
+
     "Bakpao Ayam": {
         "harga": 7000,
-        "gambar": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c"
+        "gambar": "images/ayam.jpg"
     },
+
     "Bakpao Keju": {
-        "harga": 8000,
-        "gambar": "https://images.unsplash.com/photo-1473093295043-cdd812d0e601"
+        "harga": 5000,
+        "gambar": "images/keju.jpg"
     },
-    "Bakpao Kacang Hijau": {
-        "harga": 6000,
-        "gambar": "https://images.unsplash.com/photo-1490645935967-10de6ba17061"
+
+    "Bakpao Kacang": {
+        "harga": 5000,
+        "gambar": "images/kacang.jpg"
+    },
+
+    "Bakpao Kentang": {
+        "harga": 5000,
+        "gambar": "images/kentang.jpg"
     }
+
 }
 
-# =========================================
-# TITLE
-# =========================================
-st.markdown("""
-<div class="glass">
-<h1>🥟 Distributor Bakpao</h1>
-<p>Aplikasi Distributor Modern</p>
-</div>
-""", unsafe_allow_html=True)
+# =====================================================
+# AMBIL DATA SPREADSHEET
+# =====================================================
 
-# =========================================
-# NAMA
-# =========================================
-nama = st.text_input("👤 Nama Pembeli")
+data_sheet = sheet.get_all_records()
 
-# =========================================
+if len(data_sheet) > 0:
+    df_sheet = pd.DataFrame(data_sheet)
+else:
+    df_sheet = pd.DataFrame(columns=[
+        "Tanggal",
+        "Nama",
+        "Produk",
+        "Total Qty",
+        "Total Omzet",
+        "Status"
+    ])
+
+# =====================================================
+# HEADER
+# =====================================================
+
+st.title("🥟 Bakpao Ceu Mumun")
+st.subheader("Sistem Distribusi & Pendapatan UMKM")
+
+# =====================================================
+# DASHBOARD
+# =====================================================
+
+total_omzet = df_sheet["Total Omzet"].sum() if not df_sheet.empty else 0
+
+total_produk = df_sheet["Total Qty"].sum() if not df_sheet.empty else 0
+
+total_transaksi = len(df_sheet)
+
+belum_bayar = df_sheet[
+    df_sheet["Status"] == "Belum Bayar"
+]["Total Omzet"].sum() if not df_sheet.empty else 0
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric(
+        "💰 Total Omzet",
+        f"Rp {total_omzet:,}"
+    )
+
+with col2:
+    st.metric(
+        "📦 Produk Keluar",
+        f"{total_produk} pcs"
+    )
+
+with col3:
+    st.metric(
+        "🧾 Total Transaksi",
+        total_transaksi
+    )
+
+with col4:
+    st.metric(
+        "💳 Belum Dibayar",
+        f"Rp {belum_bayar:,}"
+    )
+
+# =====================================================
+# INPUT
+# =====================================================
+
+st.write("")
+st.markdown("## 📋 Input Data Pembeli")
+
+nama = st.text_input("Nama Pembeli")
+
+status = st.selectbox(
+    "Status Pembayaran",
+    ["Belum Bayar", "Sudah Bayar"]
+)
+
+# =====================================================
 # PRODUK
-# =========================================
-st.markdown("""
-<div class="glass">
-<h2>🛒 Pilih Produk</h2>
-</div>
-""", unsafe_allow_html=True)
+# =====================================================
 
-cart = []
-total_qty = 0
-total_omzet = 0
+st.write("")
+st.markdown("## 🛒 Pilih Produk")
 
-for produk, info in produk_data.items():
+produk_terpilih = []
 
-    st.markdown('<div class="produk-card">', unsafe_allow_html=True)
+for nama_produk, data in produk_data.items():
 
-    col1, col2 = st.columns([1.2, 1])
+    st.markdown(
+        '<div class="product-box">',
+        unsafe_allow_html=True
+    )
+
+    col1, col2 = st.columns([2,1])
 
     with col1:
+
         st.image(
-            info["gambar"],
+            data["gambar"],
             use_container_width=True
         )
 
     with col2:
 
-        st.markdown(f"### {produk}")
-        st.markdown(f"## Rp {info['harga']:,}")
+        st.markdown(f"""
+        <h3>{nama_produk}</h3>
+        <h2 style="color:#ffcc66;">
+            Rp {data['harga']:,}
+        </h2>
+        """, unsafe_allow_html=True)
 
         qty = st.number_input(
-            f"Qty {produk}",
+            f"Qty {nama_produk}",
             min_value=0,
             step=1,
-            key=produk
+            key=nama_produk
         )
 
-        subtotal = qty * info["harga"]
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
 
-        if qty > 0:
+    if qty > 0:
 
-            cart.append(
-                f"{produk} ({qty} pcs)"
-            )
+        total_jual = qty * data["harga"]
 
-            total_qty += qty
-            total_omzet += subtotal
+        produk_terpilih.append({
 
-            st.success(f"Subtotal Rp {subtotal:,}")
+            "Produk": nama_produk,
+            "Qty": qty,
+            "Total Jual": total_jual
 
-    st.markdown('</div>', unsafe_allow_html=True)
+        })
 
-# =========================================
+# =====================================================
 # TOTAL
-# =========================================
-st.markdown("""
-<div class="glass">
-<h2>💰 Ringkasan</h2>
-</div>
-""", unsafe_allow_html=True)
+# =====================================================
+
+grand_qty = sum(
+    x["Qty"]
+    for x in produk_terpilih
+)
+
+grand_jual = sum(
+    x["Total Jual"]
+    for x in produk_terpilih
+)
+
+# =====================================================
+# RINGKASAN
+# =====================================================
+
+st.write("")
+st.markdown("## 🧾 Ringkasan")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.metric("Total Qty", total_qty)
+    st.success(
+        f"Total Produk: {grand_qty} pcs"
+    )
 
 with col2:
-    st.metric("Total Omzet", f"Rp {total_omzet:,}")
+    st.info(
+        f"Total Omzet: Rp {grand_jual:,}"
+    )
 
-status = st.selectbox(
-    "💳 Status Pembayaran",
-    ["Belum Bayar", "Sudah Bayar"]
-)
-
-# =========================================
+# =====================================================
 # SIMPAN
-# =========================================
-if st.button("💾 Simpan Data"):
+# =====================================================
+
+if st.button("💾 Simpan Data Pembeli"):
 
     if nama == "":
         st.warning("Masukkan nama pembeli")
 
-    elif total_qty == 0:
-        st.warning("Pilih produk dulu")
+    elif len(produk_terpilih) == 0:
+        st.warning("Pilih minimal 1 produk")
 
     else:
 
-        waktu = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        daftar_produk = []
 
-        produk_text = ", ".join(cart)
+        for item in produk_terpilih:
 
+            daftar_produk.append(
+                f"{item['Produk']} ({item['Qty']} pcs)"
+            )
+
+        gabungan_produk = ", ".join(
+            daftar_produk
+        )
+
+        waktu = datetime.now().strftime(
+            "%d-%m-%Y %H:%M:%S"
+        )
+
+        # SIMPAN KE GOOGLE SHEETS
         sheet.append_row([
             waktu,
             nama,
-            produk_text,
-            total_qty,
-            total_omzet,
+            gabungan_produk,
+            grand_qty,
+            grand_jual,
             status
         ])
 
-        st.success("✅ Data berhasil disimpan!")
+        st.success(
+            "Distribusi berhasil disimpan"
+        )
 
-# =========================================
+        st.rerun()
+
+# =====================================================
 # RIWAYAT
-# =========================================
-st.markdown("""
-<div class="glass">
-<h2>📋 Riwayat Distribusi</h2>
-</div>
-""", unsafe_allow_html=True)
+# =====================================================
 
-data = sheet.get_all_records()
+st.write("")
+st.markdown("## 📊 Riwayat Penjualan")
 
-df = pd.DataFrame(data)
+if df_sheet.empty:
 
-if not df.empty:
+    st.info("Belum ada data distribusi")
+
+else:
 
     st.dataframe(
-        df,
+        df_sheet,
         use_container_width=True,
         height=400
     )
 
-    csv = df.to_csv(index=False).encode("utf-8")
+    # =====================================================
+    # UPDATE STATUS
+    # =====================================================
+
+    st.write("")
+    st.markdown("## ✅ Update Status Pembayaran")
+
+    for i, row in df_sheet.iterrows():
+
+        col1, col2, col3, col4 = st.columns([3,3,2,2])
+
+        with col1:
+            st.write(f"👤 {row['Nama']}")
+
+        with col2:
+            st.write(f"💰 Rp {row['Total Omzet']:,}")
+
+        with col3:
+            st.write(row["Status"])
+
+        with col4:
+
+            if row["Status"] == "Belum Bayar":
+
+                if st.button(
+                    f"Tandai Lunas #{i}",
+                    key=f"lunas_{i}"
+                ):
+
+                    # update kolom status (kolom ke-6)
+                    sheet.update_cell(
+                        i + 2,
+                        6,
+                        "Sudah Bayar"
+                    )
+
+                    st.success("Status berhasil diubah")
+                    st.rerun()
+
+            else:
+
+                st.success("Lunas")
+
+    # =====================================================
+    # DOWNLOAD CSV
+    # =====================================================
+
+    csv = df_sheet.to_csv(
+        index=False
+    ).encode("utf-8")
 
     st.download_button(
-        "⬇ Download CSV",
-        csv,
-        file_name="distributor_bakpao.csv",
-        mime="text/csv"
+        label="⬇️ Download CSV",
+        data=csv,
+        file_name="laporan_penjualan.csv",
+        mime="text/csv",
+        use_container_width=True
     )
-
-    # =========================================
-    # UPDATE STATUS
-    # =========================================
-    st.markdown("""
-    <div class="glass">
-    <h2>💳 Update Status Pembayaran</h2>
-    </div>
-    """, unsafe_allow_html=True)
-
-    pilihan = st.selectbox(
-        "Pilih Data",
-        df.index
-    )
-
-    st.write(
-        "Status Sekarang:",
-        df.loc[pilihan, "Status"]
-    )
-
-    new_status = st.selectbox(
-        "Ubah Menjadi",
-        ["Belum Bayar", "Sudah Bayar"]
-    )
-
-    if st.button("✅ Update Status"):
-
-        row_number = pilihan + 2
-
-        sheet.update_cell(
-            row_number,
-            6,
-            new_status
-        )
-
-        st.success("Status berhasil diupdate!")
-        st.rerun()
-
-else:
-    st.info("Belum ada data")
