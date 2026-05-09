@@ -157,22 +157,27 @@ produk_data = {
 
     "Bakpau Coklat": {
         "harga": 5000,
-        "gambar": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200"
+        "gambar": "images/cokelat.jpg"
     },
 
     "Bakpau Ayam": {
         "harga": 7000,
-        "gambar": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200"
-    },
-
-    "Bakpau Kacang Hijau": {
-        "harga": 6000,
-        "gambar": "https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=1200"
+        "gambar": "images/ayam.jpg"
     },
 
     "Bakpau Keju": {
-        "harga": 8000,
-        "gambar": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200"
+        "harga": 5000,
+        "gambar": "images/keju.jpg"
+    },
+
+    "Bakpau Kacang": {
+        "harga": 5000,
+        "gambar": "images/kacang.jpg"
+    },
+
+    "Bakpau Kentang": {
+        "harga": 5000,
+        "gambar": "images/kentang.jpg"
     }
 
 }
