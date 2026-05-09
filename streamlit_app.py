@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import gspread
+from google.oauth2.service_account import Credentials
 from datetime import datetime
 
 # =====================================================
@@ -7,16 +9,34 @@ from datetime import datetime
 # =====================================================
 
 st.set_page_config(
-    page_title="Bakpao Ceu Mumun",
+    page_title="Distributor Bakpau",
     page_icon="🥟",
     layout="wide"
 )
 
 # =====================================================
+# GOOGLE SHEETS
+# =====================================================
+
+scope = [
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
+
+creds = Credentials.from_service_account_file(
+    "credentials.json",
+    scopes=scope
+)
+
+client = gspread.authorize(creds)
+
+sheet = client.open("Distributor Bakpau").worksheet("Data")
+
+# =====================================================
 # VIDEO BACKGROUND
 # =====================================================
 
-VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpao/main/bg.mp4"
+VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpau/main/bg.mp4"
 
 # =====================================================
 # CSS
@@ -25,17 +45,14 @@ VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpao/main/bg.mp4"
 st.markdown(f"""
 <style>
 
-/* HEADER */
 [data-testid="stHeader"] {{
     background: transparent;
 }}
 
-/* APP */
 .stApp {{
     background: transparent;
 }}
 
-/* VIDEO */
 video {{
     position: fixed;
     top: 0;
@@ -46,7 +63,6 @@ video {{
     z-index: -2;
 }}
 
-/* OVERLAY */
 .overlay {{
     position: fixed;
     top:0;
@@ -57,18 +73,15 @@ video {{
     z-index:-1;
 }}
 
-/* CONTAINER */
 .block-container {{
     padding-top: 2rem;
     padding-bottom: 3rem;
 }}
 
-/* TEXT */
 h1,h2,h3,h4,h5,h6,p,label,span {{
     color:white !important;
 }}
 
-/* PRODUCT CARD */
 .product-box {{
     background: rgba(255,255,255,0.08);
     padding: 20px;
@@ -78,7 +91,6 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
     backdrop-filter: blur(10px);
 }}
 
-/* INVOICE */
 .invoice-box {{
     background: white;
     padding: 30px;
@@ -93,7 +105,6 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
     color: black !important;
 }}
 
-/* BUTTON */
 .stButton button {{
     width:100%;
     background:#ff4b4b;
@@ -109,7 +120,6 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
     background:#ff2e2e;
 }}
 
-/* DOWNLOAD BUTTON */
 [data-testid="stDownloadButton"] button {{
     width:100%;
     background:#00c853 !important;
@@ -121,11 +131,6 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
     font-weight:bold !important;
 }}
 
-[data-testid="stDownloadButton"] button:hover {{
-    background:#00b248 !important;
-}}
-
-/* MOBILE */
 @media(max-width:768px) {{
 
     .block-container {{
@@ -155,75 +160,60 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
 
 produk_data = {
 
-    "Bakpao Coklat": {
+    "Bakpau Coklat": {
         "harga": 5000,
-        "gambar": "images/cokelat.jpg"
+        "gambar": "https://images.unsplash.com/photo-1512058564366-18510be2db19?q=80&w=1200"
     },
 
-    "Bakpao Ayam": {
+    "Bakpau Ayam": {
         "harga": 7000,
-        "gambar": "images/ayam.jpg"
+        "gambar": "https://images.unsplash.com/photo-1496116218417-1a781b1c416c?q=80&w=1200"
     },
 
-    "Bakpao Keju": {
-        "harga": 5000,
-        "gambar": "images/keju.jpg"
+    "Bakpau Kacang Hijau": {
+        "harga": 6000,
+        "gambar": "https://images.unsplash.com/photo-1526318896980-cf78c088247c?q=80&w=1200"
     },
 
-    "Bakpao Kacang": {
-        "harga": 5000,
-        "gambar": "images/kacang.jpg"
-    },
-
-    "Bakpao Kentang": {
-        "harga": 5000,
-        "gambar": "images/kentang.jpg"
+    "Bakpau Keju": {
+        "harga": 8000,
+        "gambar": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=1200"
     }
 
 }
 
 # =====================================================
-# SESSION
+# AMBIL DATA SHEET
 # =====================================================
 
-if "riwayat" not in st.session_state:
-    st.session_state.riwayat = []
+records = sheet.get_all_records()
 
-if "invoice_terakhir" not in st.session_state:
-    st.session_state.invoice_terakhir = None
+df = pd.DataFrame(records)
 
 # =====================================================
 # HEADER
 # =====================================================
 
-st.title("🥟 Bakpao Ceu Mumun")
+st.title("🥟 Distributor Bakpau")
 st.subheader("Sistem Distribusi & Pendapatan UMKM")
 
 # =====================================================
 # DASHBOARD
 # =====================================================
 
-total_omzet = sum(
-    x["Total Omzet"]
-    for x in st.session_state.riwayat
-)
+if not df.empty:
 
-total_produk = sum(
-    x["Total Qty"]
-    for x in st.session_state.riwayat
-)
+    total_omzet = df["Total Omzet"].sum()
+    total_produk = df["Total Qty"].sum()
+    total_transaksi = len(df)
 
-total_transaksi = len(
-    st.session_state.riwayat
-)
+else:
 
-belum_bayar = sum(
-    x["Total Omzet"]
-    for x in st.session_state.riwayat
-    if x["Status"] == "Belum Bayar"
-)
+    total_omzet = 0
+    total_produk = 0
+    total_transaksi = 0
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.metric(
@@ -243,21 +233,15 @@ with col3:
         total_transaksi
     )
 
-with col4:
-    st.metric(
-        "💳 Belum Dibayar",
-        f"Rp {belum_bayar:,}"
-    )
-
 # =====================================================
 # INPUT
 # =====================================================
 
 st.write("")
-st.markdown("## 📋 Input Data Pembeli")
+st.markdown("## 📋 Input Distribusi")
 
 nama = st.text_input(
-    "Nama Pembeli"
+    "Nama Reseller"
 )
 
 status = st.selectbox(
@@ -319,7 +303,7 @@ for nama_produk, data in produk_data.items():
 
             "Produk": nama_produk,
             "Qty": qty,
-            "Total Jual": total_jual
+            "Total": total_jual
 
         })
 
@@ -332,38 +316,33 @@ grand_qty = sum(
     for x in produk_terpilih
 )
 
-grand_jual = sum(
-    x["Total Jual"]
+grand_total = sum(
+    x["Total"]
     for x in produk_terpilih
 )
 
-# =====================================================
-# RINGKASAN
-# =====================================================
-
 st.write("")
-st.markdown("## 🧾 Ringkasan")
 
 col1, col2 = st.columns(2)
 
 with col1:
     st.success(
-        f"Total Produk: {grand_qty} pcs"
+        f"📦 Total Produk: {grand_qty} pcs"
     )
 
 with col2:
     st.info(
-        f"Total Omzet: Rp {grand_jual:,}"
+        f"💰 Total Omzet: Rp {grand_total:,}"
     )
 
 # =====================================================
-# BUTTON SIMPAN
+# SIMPAN
 # =====================================================
 
-if st.button("💾 Simpan Data Pembeli"):
+if st.button("💾 Simpan Distribusi"):
 
     if nama == "":
-        st.warning("Masukkan nama pembeli")
+        st.warning("Masukkan nama reseller")
 
     elif len(produk_terpilih) == 0:
         st.warning("Pilih minimal 1 produk")
@@ -382,95 +361,39 @@ if st.button("💾 Simpan Data Pembeli"):
             daftar_produk
         )
 
-        invoice_data = {
-
-            "Tanggal":
-            datetime.now().strftime(
-                "%d-%m-%Y %H:%M:%S"
-            ),
-
-            "Nama": nama,
-
-            "Produk": gabungan_produk,
-
-            "Total Qty": grand_qty,
-
-            "Total Omzet": grand_jual,
-
-            "Status": status
-        }
-
-        st.session_state.invoice_terakhir = invoice_data
-
-        st.session_state.riwayat.append(
-            invoice_data
+        tanggal = datetime.now().strftime(
+            "%d-%m-%Y %H:%M:%S"
         )
 
+        sheet.append_row([
+
+            tanggal,
+            nama,
+            gabungan_produk,
+            grand_qty,
+            grand_total,
+            status
+
+        ])
+
         st.success(
-            "Distribusi berhasil disimpan"
+            "Data berhasil disimpan ke Google Spreadsheet"
         )
 
         st.rerun()
-
-# =====================================================
-# INVOICE
-# =====================================================
-
-if st.session_state.invoice_terakhir is not None:
-
-    invoice = st.session_state.invoice_terakhir
-
-    st.write("")
-    st.markdown("## 🧾 Invoice")
-
-    st.markdown(f"""
-    <div class="invoice-box">
-
-    <h2>🥟 Distributor Bakpao</h2>
-
-    <hr>
-
-    <p><b>Tanggal:</b> {invoice['Tanggal']}</p>
-
-    <p><b>Nama:</b> {invoice['Nama']}</p>
-
-    <p><b>Status:</b> {invoice['Status']}</p>
-
-    <hr>
-
-    <p><b>Produk:</b><br>
-    {invoice['Produk']}
-    </p>
-
-    <hr>
-
-    <h3>
-    Total Produk: {invoice['Total Qty']} pcs
-    </h3>
-
-    <h1 style="color:#ff4b4b !important;">
-    Rp {invoice['Total Omzet']:,}
-    </h1>
-
-    </div>
-    """, unsafe_allow_html=True)
 
 # =====================================================
 # RIWAYAT
 # =====================================================
 
 st.write("")
-st.markdown("## 📊 Riwayat Penjualan")
+st.markdown("## 📊 Riwayat Distribusi")
 
-if len(st.session_state.riwayat) == 0:
+if df.empty:
 
     st.info("Belum ada data distribusi")
 
 else:
-
-    df = pd.DataFrame(
-        st.session_state.riwayat
-    )
 
     st.dataframe(
         df,
@@ -478,32 +401,42 @@ else:
         height=400
     )
 
+    # =================================================
+    # UPDATE STATUS
+    # =================================================
+
     st.write("")
     st.markdown("## ✅ Update Status Pembayaran")
 
-    for i, item in enumerate(st.session_state.riwayat):
+    for i in range(len(df)):
 
         col1, col2, col3, col4 = st.columns([3,3,2,2])
 
         with col1:
-            st.write(f"👤 {item['Nama']}")
+            st.write(f"👤 {df.iloc[i]['Nama']}")
 
         with col2:
-            st.write(f"💰 Rp {item['Total Omzet']:,}")
+            st.write(f"💰 Rp {df.iloc[i]['Total Omzet']:,}")
 
         with col3:
-            st.write(item["Status"])
+            st.write(df.iloc[i]["Status"])
 
         with col4:
 
-            if item["Status"] == "Belum Bayar":
+            if df.iloc[i]["Status"] == "Belum Bayar":
 
                 if st.button(
                     f"Tandai Lunas #{i}",
                     key=f"lunas_{i}"
                 ):
 
-                    st.session_state.riwayat[i]["Status"] = "Sudah Bayar"
+                    row_number = i + 2
+
+                    sheet.update_cell(
+                        row_number,
+                        6,
+                        "Sudah Bayar"
+                    )
 
                     st.rerun()
 
@@ -511,7 +444,9 @@ else:
 
                 st.success("Lunas")
 
+    # =================================================
     # DOWNLOAD CSV
+    # =================================================
 
     csv = df.to_csv(
         index=False
@@ -520,7 +455,7 @@ else:
     st.download_button(
         label="⬇️ Download CSV",
         data=csv,
-        file_name="laporan_penjualan.csv",
+        file_name="laporan_distributor.csv",
         mime="text/csv",
         use_container_width=True
     )
