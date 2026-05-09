@@ -1,12 +1,11 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-import base64
 import gspread
 from google.oauth2.service_account import Credentials
 
 # =========================================
-# CONFIG
+# PAGE CONFIG
 # =========================================
 st.set_page_config(
     page_title="Distributor Bakpao",
@@ -43,6 +42,7 @@ VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpao/main/bg.mp4"
 st.markdown(
     f"""
     <style>
+
     .stApp {{
         background: transparent;
     }}
@@ -58,39 +58,78 @@ st.markdown(
     }}
 
     .main {{
-        background: rgba(0,0,0,0.45);
-        border-radius: 20px;
-        padding: 20px;
-    }}
-
-    h1,h2,h3,h4,p,label,div {{
-        color: white !important;
-    }}
-
-    .stButton>button {{
-        width: 100%;
-        border-radius: 12px;
-        background-color: orange;
-        color: white;
-        border: none;
-        font-weight: bold;
-    }}
-
-    .stDownloadButton>button {{
-        width: 100%;
-        border-radius: 12px;
-        background-color: green;
-        color: white;
-        border: none;
-        font-weight: bold;
-    }}
-
-    .css-1d391kg {{
-        background-color: rgba(0,0,0,0);
+        background: rgba(0,0,0,0);
     }}
 
     .block-container {{
         padding-top: 2rem;
+        padding-bottom: 2rem;
+    }}
+
+    h1, h2, h3, h4, h5, h6, p, label {{
+        color: white !important;
+    }}
+
+    .glass {{
+        background: rgba(255,255,255,0.12);
+        border-radius: 25px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        margin-bottom: 20px;
+    }}
+
+    .produk-card {{
+        background: rgba(255,255,255,0.12);
+        padding: 15px;
+        border-radius: 25px;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.2);
+        margin-bottom: 20px;
+    }}
+
+    .stButton>button {{
+        width: 100%;
+        border-radius: 15px;
+        border: none;
+        background: linear-gradient(45deg,#ff9800,#ff5722);
+        color: white;
+        font-weight: bold;
+        height: 3em;
+    }}
+
+    .stDownloadButton>button {{
+        width: 100%;
+        border-radius: 15px;
+        border: none;
+        background: linear-gradient(45deg,#4caf50,#2e7d32);
+        color: white;
+        font-weight: bold;
+        height: 3em;
+    }}
+
+    div[data-baseweb="select"] > div {{
+        background-color: rgba(255,255,255,0.15);
+        color: white;
+        border-radius: 15px;
+    }}
+
+    input {{
+        background-color: rgba(255,255,255,0.15) !important;
+        color: white !important;
+        border-radius: 15px !important;
+    }}
+
+    @media (max-width: 768px) {{
+
+        .block-container {{
+            padding: 1rem;
+        }}
+
+        h1 {{
+            font-size: 30px !important;
+        }}
+
     }}
 
     </style>
@@ -98,6 +137,7 @@ st.markdown(
     <video autoplay muted loop>
         <source src="{VIDEO_URL}" type="video/mp4">
     </video>
+
     """,
     unsafe_allow_html=True
 )
@@ -127,17 +167,26 @@ produk_data = {
 # =========================================
 # TITLE
 # =========================================
-st.title("🥟 Distributor Bakpao")
+st.markdown("""
+<div class="glass">
+<h1>🥟 Distributor Bakpao</h1>
+<p>Aplikasi Distributor Modern</p>
+</div>
+""", unsafe_allow_html=True)
 
 # =========================================
-# INPUT NAMA
+# NAMA
 # =========================================
-nama = st.text_input("Nama Pembeli")
+nama = st.text_input("👤 Nama Pembeli")
 
 # =========================================
-# PILIH PRODUK
+# PRODUK
 # =========================================
-st.subheader("🛒 Pilih Produk")
+st.markdown("""
+<div class="glass">
+<h2>🛒 Pilih Produk</h2>
+</div>
+""", unsafe_allow_html=True)
 
 cart = []
 total_qty = 0
@@ -145,14 +194,20 @@ total_omzet = 0
 
 for produk, info in produk_data.items():
 
-    col1, col2 = st.columns([2, 1])
+    st.markdown('<div class="produk-card">', unsafe_allow_html=True)
+
+    col1, col2 = st.columns([1.2, 1])
 
     with col1:
-        st.image(info["gambar"], use_container_width=True)
+        st.image(
+            info["gambar"],
+            use_container_width=True
+        )
 
     with col2:
-        st.markdown(f"## {produk}")
-        st.markdown(f"### Rp {info['harga']:,}")
+
+        st.markdown(f"### {produk}")
+        st.markdown(f"## Rp {info['harga']:,}")
 
         qty = st.number_input(
             f"Qty {produk}",
@@ -161,8 +216,9 @@ for produk, info in produk_data.items():
             key=produk
         )
 
+        subtotal = qty * info["harga"]
+
         if qty > 0:
-            subtotal = qty * info["harga"]
 
             cart.append(
                 f"{produk} ({qty} pcs)"
@@ -171,20 +227,29 @@ for produk, info in produk_data.items():
             total_qty += qty
             total_omzet += subtotal
 
-            st.success(f"Subtotal: Rp {subtotal:,}")
+            st.success(f"Subtotal Rp {subtotal:,}")
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # =========================================
 # TOTAL
 # =========================================
-st.markdown("---")
+st.markdown("""
+<div class="glass">
+<h2>💰 Ringkasan</h2>
+</div>
+""", unsafe_allow_html=True)
 
-st.subheader("💰 Ringkasan")
+col1, col2 = st.columns(2)
 
-st.write(f"Total Qty : {total_qty}")
-st.write(f"Total Omzet : Rp {total_omzet:,}")
+with col1:
+    st.metric("Total Qty", total_qty)
+
+with col2:
+    st.metric("Total Omzet", f"Rp {total_omzet:,}")
 
 status = st.selectbox(
-    "Status Pembayaran",
+    "💳 Status Pembayaran",
     ["Belum Bayar", "Sudah Bayar"]
 )
 
@@ -195,8 +260,10 @@ if st.button("💾 Simpan Data"):
 
     if nama == "":
         st.warning("Masukkan nama pembeli")
+
     elif total_qty == 0:
         st.warning("Pilih produk dulu")
+
     else:
 
         waktu = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
@@ -212,56 +279,59 @@ if st.button("💾 Simpan Data"):
             status
         ])
 
-        st.success("Data berhasil disimpan!")
-
-# =========================================
-# AMBIL DATA DARI GOOGLE SHEETS
-# =========================================
-data = sheet.get_all_records()
-
-df = pd.DataFrame(data)
+        st.success("✅ Data berhasil disimpan!")
 
 # =========================================
 # RIWAYAT
 # =========================================
-st.markdown("---")
+st.markdown("""
+<div class="glass">
+<h2>📋 Riwayat Distribusi</h2>
+</div>
+""", unsafe_allow_html=True)
 
-st.subheader("📋 Riwayat Distribusi")
+data = sheet.get_all_records()
+
+df = pd.DataFrame(data)
 
 if not df.empty:
 
     st.dataframe(
         df,
-        use_container_width=True
+        use_container_width=True,
+        height=400
     )
 
-    # DOWNLOAD CSV
-    csv = df.to_csv(index=False).encode('utf-8')
+    csv = df.to_csv(index=False).encode("utf-8")
 
     st.download_button(
         "⬇ Download CSV",
         csv,
-        "distributor_bakpao.csv",
-        "text/csv"
+        file_name="distributor_bakpao.csv",
+        mime="text/csv"
     )
 
     # =========================================
     # UPDATE STATUS
     # =========================================
-    st.markdown("---")
-    st.subheader("💳 Update Status Pembayaran")
+    st.markdown("""
+    <div class="glass">
+    <h2>💳 Update Status Pembayaran</h2>
+    </div>
+    """, unsafe_allow_html=True)
 
     pilihan = st.selectbox(
         "Pilih Data",
         df.index
     )
 
-    current_status = df.loc[pilihan, "Status"]
-
-    st.write(f"Status sekarang: {current_status}")
+    st.write(
+        "Status Sekarang:",
+        df.loc[pilihan, "Status"]
+    )
 
     new_status = st.selectbox(
-        "Ubah Status",
+        "Ubah Menjadi",
         ["Belum Bayar", "Sudah Bayar"]
     )
 
