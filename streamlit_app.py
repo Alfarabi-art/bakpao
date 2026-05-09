@@ -254,10 +254,10 @@ with col4:
 # =====================================================
 
 st.write("")
-st.markdown("## 📋 Input Distribusi")
+st.markdown("## 📋 Input Data Pembeli")
 
 nama = st.text_input(
-    "Nama Reseller"
+    "Nama Pembeli"
 )
 
 status = st.selectbox(
@@ -360,10 +360,10 @@ with col2:
 # BUTTON SIMPAN
 # =====================================================
 
-if st.button("💾 Simpan Distribusi"):
+if st.button("💾 Simpan Data Pembeli"):
 
     if nama == "":
-        st.warning("Masukkan nama reseller")
+        st.warning("Masukkan nama pembeli")
 
     elif len(produk_terpilih) == 0:
         st.warning("Pilih minimal 1 produk")
@@ -426,7 +426,7 @@ if st.session_state.invoice_terakhir is not None:
     st.markdown(f"""
     <div class="invoice-box">
 
-    <h2>🥟 Distributor Bakpau</h2>
+    <h2>🥟 Distributor Bakpao</h2>
 
     <hr>
 
@@ -460,7 +460,7 @@ if st.session_state.invoice_terakhir is not None:
 # =====================================================
 
 st.write("")
-st.markdown("## 📊 Riwayat Distribusi")
+st.markdown("## 📊 Riwayat Penjualan")
 
 if len(st.session_state.riwayat) == 0:
 
@@ -520,7 +520,7 @@ else:
     st.download_button(
         label="⬇️ Download CSV",
         data=csv,
-        file_name="laporan_distributor.csv",
+        file_name="laporan_penjualan.csv",
         mime="text/csv",
         use_container_width=True
     )
