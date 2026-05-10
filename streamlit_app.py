@@ -203,11 +203,6 @@ produk_data = {
         "gambar": "images/ayam.jpg"
     },
 
-    "Bakpao Keju": {
-        "harga": 5000,
-        "gambar": "images/keju.jpg"
-    },
-
     "Bakpao Kacang": {
         "harga": 5000,
         "gambar": "images/kacang.jpg"
@@ -216,6 +211,11 @@ produk_data = {
     "Bakpao Kentang": {
         "harga": 5000,
         "gambar": "images/kentang.jpg"
+    },
+
+    "Bakpao Unti Kelapa": {
+        "harga": 5000,
+        "gambar": "images/kelapa.jpg"
     }
 
 }
