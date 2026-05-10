@@ -3,6 +3,10 @@ import pandas as pd
 from datetime import datetime
 import gspread
 from google.oauth2.service_account import Credentials
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from io import BytesIO
+import urllib.parse
 
 # =====================================================
 # CONFIG
@@ -246,6 +250,40 @@ st.title("🥟 Bakpao Ceu Mumun")
 st.subheader("Sistem Distribusi & Pendapatan UMKM")
 
 # =====================================================
+# FILTER BULANAN
+# =====================================================
+
+st.sidebar.markdown("## 📅 Filter Bulanan")
+
+if not df_sheet.empty:
+
+    df_sheet["Tanggal Convert"] = pd.to_datetime(
+        df_sheet["Tanggal"],
+        format="%d-%m-%Y %H:%M:%S",
+        errors="coerce"
+    )
+
+    bulan_list = sorted(
+        df_sheet["Tanggal Convert"]
+        .dt.strftime("%B %Y")
+        .dropna()
+        .unique()
+    )
+
+    selected_bulan = st.sidebar.selectbox(
+        "Pilih Bulan",
+        ["Semua"] + list(bulan_list)
+    )
+
+    if selected_bulan != "Semua":
+
+        df_sheet = df_sheet[
+            df_sheet["Tanggal Convert"]
+            .dt.strftime("%B %Y")
+            == selected_bulan
+        ]
+
+# =====================================================
 # DASHBOARD
 # =====================================================
 
@@ -399,6 +437,73 @@ with col2:
     )
 
 # =====================================================
+# GENERATE PDF
+# =====================================================
+
+def generate_pdf(
+    nama,
+    produk,
+    total_qty,
+    total_harga,
+    status,
+    tanggal
+):
+
+    buffer = BytesIO()
+
+    p = canvas.Canvas(
+        buffer,
+        pagesize=letter
+    )
+
+    p.setFont("Helvetica-Bold", 20)
+
+    p.drawString(
+        200,
+        750,
+        "INVOICE BAKPAO"
+    )
+
+    p.setFont("Helvetica", 12)
+
+    p.drawString(50, 700, f"Tanggal : {tanggal}")
+    p.drawString(50, 680, f"Nama : {nama}")
+
+    p.drawString(50, 650, "Produk :")
+
+    y = 630
+
+    for item in produk.split("\n"):
+
+        p.drawString(70, y, f"- {item}")
+
+        y -= 20
+
+    p.drawString(
+        50,
+        y - 20,
+        f"Total Qty : {total_qty}"
+    )
+
+    p.drawString(
+        50,
+        y - 40,
+        f"Total Bayar : Rp {total_harga:,}"
+    )
+
+    p.drawString(
+        50,
+        y - 60,
+        f"Status : {status}"
+    )
+
+    p.save()
+
+    buffer.seek(0)
+
+    return buffer
+
+# =====================================================
 # SIMPAN
 # =====================================================
 
@@ -454,6 +559,56 @@ if st.button("💾 Simpan Data Pembeli"):
             "Distribusi berhasil disimpan"
         )
 
+# =====================================================
+# PDF INVOICE
+# =====================================================
+
+pdf_file = generate_pdf(
+    nama,
+    gabungan_produk,
+    grand_qty,
+    grand_jual,
+    status,
+    waktu
+)
+
+st.download_button(
+    label="📄 Download Invoice PDF",
+    data=pdf_file,
+    file_name=f"invoice_{nama}.pdf",
+    mime="application/pdf",
+    use_container_width=True
+)
+
+# =====================================================
+# WHATSAPP
+# =====================================================
+
+pesan = f"""
+Halo {nama}
+
+Berikut invoice pembelian Anda.
+
+🧾 Produk:
+{gabungan_produk}
+
+📦 Total Qty: {grand_qty}
+💰 Total Bayar: Rp {grand_jual:,}
+💳 Status: {status}
+
+Terima kasih 🙏
+"""
+
+wa_link = (
+    "https://wa.me/?text=" +
+    urllib.parse.quote(pesan)
+)
+
+st.link_button(
+    "📲 Kirim ke WhatsApp",
+    wa_link,
+    use_container_width=True
+)
         st.rerun()
 
 # =====================================================
