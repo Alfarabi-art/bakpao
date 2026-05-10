@@ -558,6 +558,7 @@ if st.button("💾 Simpan Data Pembeli"):
         st.success(
             "Distribusi berhasil disimpan"
         )
+        st.rerun()
 
 # =====================================================
 # PDF INVOICE
@@ -609,7 +610,6 @@ st.link_button(
     wa_link,
     use_container_width=True
 )
-        st.rerun()
 
 # =====================================================
 # RIWAYAT
