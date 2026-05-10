@@ -95,18 +95,34 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
     backdrop-filter: blur(10px);
 }}
 
-.invoice-box {{
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    color: black !important;
+.metric-card {{
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 25px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    transition: 0.3s;
 }}
 
-.invoice-box h1,
-.invoice-box h2,
-.invoice-box h3,
-.invoice-box p {{
-    color: black !important;
+.metric-card:hover {{
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.12);
+}}
+
+.metric-title {{
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px;
+    font-weight: 500;
+}}
+
+.metric-value {{
+    font-size: 42px;
+    font-weight: bold;
+    color: white;
 }}
 
 .stButton button {{
@@ -139,6 +155,11 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
     background:#00b248 !important;
 }}
 
+section[data-testid="stSidebar"] {{
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+}}
+
 @media(max-width:768px) {{
 
     .block-container {{
@@ -148,6 +169,10 @@ h1,h2,h3,h4,h5,h6,p,label,span {{
 
     h1 {{
         font-size: 34px !important;
+    }}
+
+    .metric-value {{
+        font-size: 28px;
     }}
 
 }}
@@ -178,9 +203,9 @@ produk_data = {
         "gambar": "images/ayam.jpg"
     },
 
-    "Bakpao Kentang": {
+    "Bakpao Keju": {
         "harga": 5000,
-        "gambar": "images/kentang.jpg"
+        "gambar": "images/keju.jpg"
     },
 
     "Bakpao Kacang": {
@@ -188,9 +213,9 @@ produk_data = {
         "gambar": "images/kacang.jpg"
     },
 
-    "Bakpao Unti Kelapa": {
+    "Bakpao Kentang": {
         "harga": 5000,
-        "gambar": "images/kelapa.jpg"
+        "gambar": "images/kentang.jpg"
     }
 
 }
@@ -237,28 +262,36 @@ belum_bayar = df_sheet[
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric(
-        "💰 Total Omzet",
-        f"Rp {total_omzet:,}"
-    )
+    st.markdown(f"""
+    <div class="metric-card">
+        <div class="metric-title">💰 Total Omzet</div>
+        <div class="metric-value">Rp {total_omzet:,}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col2:
-    st.metric(
-        "📦 Produk Keluar",
-        f"{total_produk} pcs"
-    )
+    st.markdown(f"""
+    <div class="metric-card">
+        <div class="metric-title">📦 Produk Keluar</div>
+        <div class="metric-value">{total_produk} pcs</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col3:
-    st.metric(
-        "🧾 Total Transaksi",
-        total_transaksi
-    )
+    st.markdown(f"""
+    <div class="metric-card">
+        <div class="metric-title">🧾 Total Transaksi</div>
+        <div class="metric-value">{total_transaksi}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 with col4:
-    st.metric(
-        "💳 Belum Dibayar",
-        f"Rp {belum_bayar:,}"
-    )
+    st.markdown(f"""
+    <div class="metric-card">
+        <div class="metric-title">💳 Belum Dibayar</div>
+        <div class="metric-value">Rp {belum_bayar:,}</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # =====================================================
 # INPUT
@@ -387,7 +420,6 @@ if st.button("💾 Simpan Data Pembeli"):
                 f"{item['Produk']} ({item['Qty']} pcs)"
             )
 
-        # PRODUK TURUN KE BAWAH BIAR RAPI
         gabungan_produk = "\n".join(
             daftar_produk
         )
@@ -406,10 +438,7 @@ if st.button("💾 Simpan Data Pembeli"):
             status
         ])
 
-        # =====================================================
         # FORMAT SHEET
-        # =====================================================
-
         last_row = len(sheet.get_all_values())
 
         sheet.format(
