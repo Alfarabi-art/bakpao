@@ -532,19 +532,34 @@ else:
         mime="text/csv",
         use_container_width=True
 
-        # =====================================================
-# RESET DATA
-# =====================================================
+    # =====================================================
+    # RESET DATA
+    # =====================================================
 
-st.write("")
-st.markdown("## 🗑 Reset Semua Data")
+    st.write("")
+    st.markdown("## 🗑 Reset Semua Data")
 
-if st.button("Hapus Semua Data", use_container_width=True):
+    if st.button(
+        "Hapus Semua Data",
+        use_container_width=True
+    ):
 
-    # hapus semua isi kecuali header
-    sheet.resize(rows=1)
+        # SISAKAN HEADER SAJA
+        headers = [
+            "Tanggal",
+            "Nama",
+            "Produk",
+            "Total Qty",
+            "Total Omzet",
+            "Status"
+        ]
 
-    st.success("Semua data berhasil dihapus")
+        # HAPUS SEMUA DATA
+        sheet.clear()
 
-    st.rerun()
-    )
+        # KEMBALIKAN HEADER
+        sheet.append_row(headers)
+
+        st.success("Semua data berhasil dihapus")
+
+        st.rerun()
