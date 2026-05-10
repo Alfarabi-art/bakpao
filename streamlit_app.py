@@ -531,4 +531,20 @@ else:
         file_name="laporan_penjualan.csv",
         mime="text/csv",
         use_container_width=True
+
+        # =====================================================
+# RESET DATA
+# =====================================================
+
+st.write("")
+st.markdown("## 🗑 Reset Semua Data")
+
+if st.button("Hapus Semua Data", use_container_width=True):
+
+    # hapus semua isi kecuali header
+    sheet.resize(rows=1)
+
+    st.success("Semua data berhasil dihapus")
+
+    st.rerun()
     )
