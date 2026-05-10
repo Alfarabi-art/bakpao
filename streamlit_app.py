@@ -563,3 +563,4 @@ else:
         st.success("Semua data berhasil dihapus")
 
         st.rerun()
+)
