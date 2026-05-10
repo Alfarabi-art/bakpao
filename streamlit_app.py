@@ -9,7 +9,7 @@ from io import BytesIO
 import urllib.parse
 
 # =====================================================
-# PAGE CONFIG
+# CONFIG
 # =====================================================
 
 st.set_page_config(
@@ -19,7 +19,7 @@ st.set_page_config(
 )
 
 # =====================================================
-# GOOGLE SHEETS
+# GOOGLE SHEETS CONNECT
 # =====================================================
 
 scope = [
@@ -46,124 +46,153 @@ sheet = spreadsheet.worksheet("Data")
 
 VIDEO_URL = "https://raw.githubusercontent.com/Alfarabi-art/bakpao/main/bg.mp4"
 
-st.markdown(
-    f"""
-    <style>
+# =====================================================
+# CSS
+# =====================================================
 
-    .stApp {{
-        background: transparent;
-    }}
+st.markdown(f"""
+<style>
 
-    video {{
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%;
-        min-height: 100%;
-        object-fit: cover;
-        z-index: -2;
-    }}
+[data-testid="stHeader"] {{
+    background: transparent;
+}}
 
-    .overlay {{
-        position: fixed;
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        background: rgba(0,0,0,0.55);
-        z-index:-1;
-    }}
+.stApp {{
+    background: transparent;
+}}
+
+video {{
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}}
+
+.overlay {{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.65);
+    z-index:-1;
+}}
+
+.block-container {{
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}}
+
+h1,h2,h3,h4,h5,h6,p,label,span {{
+    color:white !important;
+}}
+
+.product-box {{
+    background: rgba(255,255,255,0.08);
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+}}
+
+.metric-card {{
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 25px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}}
+
+.metric-card:hover {{
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.12);
+}}
+
+.metric-title {{
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px;
+    font-weight: 500;
+}}
+
+.metric-value {{
+    font-size: 42px;
+    font-weight: bold;
+    color: white;
+}}
+
+.stButton button {{
+    width:100%;
+    background:#ff4b4b;
+    color:white;
+    border:none;
+    border-radius:15px;
+    padding:14px;
+    font-size:17px;
+    font-weight:bold;
+}}
+
+.stButton button:hover {{
+    background:#ff2e2e;
+}}
+
+[data-testid="stDownloadButton"] button {{
+    width:100%;
+    background:#00c853 !important;
+    color:white !important;
+    border:none !important;
+    border-radius:15px !important;
+    padding:14px !important;
+    font-size:17px !important;
+    font-weight:bold !important;
+}}
+
+[data-testid="stDownloadButton"] button:hover {{
+    background:#00b248 !important;
+}}
+
+section[data-testid="stSidebar"] {{
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+}}
+
+@media(max-width:768px) {{
 
     .block-container {{
-        padding-top: 2rem;
+        padding-left: 15px;
+        padding-right: 15px;
     }}
 
-    h1,h2,h3,h4,h5,h6,p,label,span {{
-        color:white !important;
-    }}
-
-    /* INPUT */
-    .stTextInput input {{
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.2);
-        color: white;
-        border-radius: 15px;
-    }}
-
-    .stSelectbox div[data-baseweb="select"] {{
-        background: rgba(255,255,255,0.15);
-        border-radius: 15px;
-    }}
-
-    /* BUTTON */
-    .stButton>button {{
-        width: 100%;
-        border-radius: 15px;
-        border: none;
-        background: rgba(255,255,255,0.15);
-        color: white;
-        backdrop-filter: blur(10px);
-        padding: 12px;
-        font-weight: bold;
-    }}
-
-    .stDownloadButton>button {{
-        width: 100%;
-        border-radius: 15px;
-        border: none;
-        background: rgba(255,255,255,0.15);
-        color: white;
-        backdrop-filter: blur(10px);
-        padding: 12px;
-        font-weight: bold;
-    }}
-
-    /* GLASS CARD */
-    .metric-card {{
-        background: rgba(255,255,255,0.12);
-        border-radius: 20px;
-        padding: 20px;
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.2);
-        text-align: center;
-        color: white;
-        margin-bottom: 20px;
-    }}
-
-    .metric-title {{
-        font-size: 18px;
-        margin-bottom: 10px;
+    h1 {{
+        font-size: 34px !important;
     }}
 
     .metric-value {{
-        font-size: 32px;
-        font-weight: bold;
+        font-size: 28px;
     }}
 
-    /* PRODUCT */
-    .product-box {{
-        background: rgba(255,255,255,0.08);
-        padding: 20px;
-        border-radius: 20px;
-        margin-bottom: 25px;
-        border: 1px solid rgba(255,255,255,0.1);
-        backdrop-filter: blur(10px);
-    }}
+}}
 
-    </style>
+</style>
 
-    <video autoplay muted loop>
-        <source src="{VIDEO_URL}" type="video/mp4">
-    </video>
+<video autoplay muted loop playsinline>
+    <source src="{VIDEO_URL}" type="video/mp4">
+</video>
 
-    <div class="overlay"></div>
+<div class="overlay"></div>
 
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
 # =====================================================
-# PRODUK
+# DATA PRODUK
 # =====================================================
 
 produk_data = {
@@ -178,14 +207,14 @@ produk_data = {
         "gambar": "images/ayam.jpg"
     },
 
-    "Bakpao Kentang": {
-        "harga": 6000,
-        "gambar": "images/kentang.jpg"
-    },
-
     "Bakpao Kacang": {
         "harga": 5000,
         "gambar": "images/kacang.jpg"
+    },
+
+    "Bakpao Kentang": {
+        "harga": 5000,
+        "gambar": "images/kentang.jpg"
     },
 
     "Bakpao Unti Kelapa": {
@@ -196,7 +225,7 @@ produk_data = {
 }
 
 # =====================================================
-# AMBIL DATA SHEET
+# AMBIL DATA SPREADSHEET
 # =====================================================
 
 data_sheet = sheet.get_all_records()
@@ -269,137 +298,6 @@ with col4:
     """, unsafe_allow_html=True)
 
 # =====================================================
-# LAPORAN OMZET
-# =====================================================
-
-st.write("")
-st.markdown("## 📈 Laporan Omzet")
-
-if not df_sheet.empty:
-
-    df_sheet["Tanggal Convert"] = pd.to_datetime(
-        df_sheet["Tanggal"],
-        format="%d-%m-%Y %H:%M:%S",
-        errors="coerce"
-    )
-
-    today = datetime.now().date()
-
-    omzet_harian = df_sheet[
-        df_sheet["Tanggal Convert"].dt.date == today
-    ]["Total Omzet"].sum()
-
-    now = datetime.now()
-
-    omzet_bulanan = df_sheet[
-        (df_sheet["Tanggal Convert"].dt.month == now.month) &
-        (df_sheet["Tanggal Convert"].dt.year == now.year)
-    ]["Total Omzet"].sum()
-
-    omzet_tahunan = df_sheet[
-        df_sheet["Tanggal Convert"].dt.year == now.year
-    ]["Total Omzet"].sum()
-
-else:
-
-    omzet_harian = 0
-    omzet_bulanan = 0
-    omzet_tahunan = 0
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.markdown(f"""
-    <div class="metric-card">
-        <div class="metric-title">📅 Omzet Harian</div>
-        <div class="metric-value">Rp {omzet_harian:,}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col2:
-    st.markdown(f"""
-    <div class="metric-card">
-        <div class="metric-title">🗓️ Omzet Bulanan</div>
-        <div class="metric-value">Rp {omzet_bulanan:,}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-with col3:
-    st.markdown(f"""
-    <div class="metric-card">
-        <div class="metric-title">📆 Omzet Tahunan</div>
-        <div class="metric-value">Rp {omzet_tahunan:,}</div>
-    </div>
-    """, unsafe_allow_html=True)
-
-# =====================================================
-# PDF FUNCTION
-# =====================================================
-
-def generate_pdf(
-    nama,
-    produk,
-    total_qty,
-    total_harga,
-    status,
-    tanggal
-):
-
-    buffer = BytesIO()
-
-    p = canvas.Canvas(
-        buffer,
-        pagesize=letter
-    )
-
-    p.setFont("Helvetica-Bold", 20)
-
-    p.drawString(
-        200,
-        750,
-        "INVOICE BAKPAO"
-    )
-
-    p.setFont("Helvetica", 12)
-
-    p.drawString(50, 700, f"Tanggal : {tanggal}")
-    p.drawString(50, 680, f"Nama : {nama}")
-
-    p.drawString(50, 650, "Produk :")
-
-    y = 630
-
-    for item in produk.split("\n"):
-
-        p.drawString(70, y, f"- {item}")
-
-        y -= 20
-
-    p.drawString(
-        50,
-        y - 20,
-        f"Total Qty : {total_qty}"
-    )
-
-    p.drawString(
-        50,
-        y - 40,
-        f"Total Bayar : Rp {total_harga:,}"
-    )
-
-    p.drawString(
-        50,
-        y - 60,
-        f"Status : {status}"
-    )
-
-    p.save()
-
-    buffer.seek(0)
-
-    return buffer
-
-# =====================================================
 # INPUT
 # =====================================================
 
@@ -442,7 +340,9 @@ for nama_produk, data in produk_data.items():
 
         st.markdown(f"""
         <h3>{nama_produk}</h3>
-        <h2>Rp {data['harga']:,}</h2>
+        <h2 style="color:#ffcc66;">
+            Rp {data['harga']:,}
+        </h2>
         """, unsafe_allow_html=True)
 
         qty = st.number_input(
@@ -452,7 +352,10 @@ for nama_produk, data in produk_data.items():
             key=nama_produk
         )
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown(
+        '</div>',
+        unsafe_allow_html=True
+    )
 
     if qty > 0:
 
@@ -529,7 +432,7 @@ if st.button("💾 Simpan Data Pembeli"):
             "%d-%m-%Y %H:%M:%S"
         )
 
-        # SIMPAN GOOGLE SHEETS
+        # SIMPAN KE GOOGLE SHEETS
         sheet.append_row([
             waktu,
             nama,
@@ -555,50 +458,7 @@ if st.button("💾 Simpan Data Pembeli"):
             "Distribusi berhasil disimpan"
         )
 
-        # PDF
-        pdf_file = generate_pdf(
-            nama,
-            gabungan_produk,
-            grand_qty,
-            grand_jual,
-            status,
-            waktu
-        )
-
-        st.download_button(
-            label="📄 Download Invoice PDF",
-            data=pdf_file,
-            file_name=f"invoice_{nama}.pdf",
-            mime="application/pdf",
-            use_container_width=True
-        )
-
-        # WHATSAPP
-        pesan = f'''
-Halo {nama}
-
-Berikut invoice pembelian Anda.
-
-🧾 Produk:
-{gabungan_produk}
-
-📦 Total Qty: {grand_qty}
-💰 Total Bayar: Rp {grand_jual:,}
-💳 Status: {status}
-
-Terima kasih 🙏
-'''
-
-        wa_link = (
-            "https://wa.me/?text=" +
-            urllib.parse.quote(pesan)
-        )
-
-        st.link_button(
-            "📲 Kirim ke WhatsApp",
-            wa_link,
-            use_container_width=True
-        )
+        st.rerun()
 
 # =====================================================
 # RIWAYAT
@@ -619,14 +479,12 @@ else:
         height=400
     )
 
-# =====================================================
-# UPDATE STATUS
-# =====================================================
+    # =====================================================
+    # UPDATE STATUS
+    # =====================================================
 
-st.write("")
-st.markdown("## ✅ Update Status Pembayaran")
-
-if not df_sheet.empty:
+    st.write("")
+    st.markdown("## ✅ Update Status Pembayaran")
 
     for i, row in df_sheet.iterrows():
 
@@ -657,54 +515,56 @@ if not df_sheet.empty:
                     )
 
                     st.success("Status berhasil diubah")
-
                     st.rerun()
 
             else:
 
                 st.success("Lunas")
 
-# =====================================================
-# DOWNLOAD CSV
-# =====================================================
+    # =====================================================
+    # DOWNLOAD CSV
+    # =====================================================
 
-csv = df_sheet.to_csv(
-    index=False
-).encode("utf-8")
+    csv = df_sheet.to_csv(
+        index=False
+    ).encode("utf-8")
 
-st.download_button(
-    label="⬇️ Download CSV",
-    data=csv,
-    file_name="laporan_penjualan.csv",
-    mime="text/csv",
-    use_container_width=True
-)
+    st.download_button(
+        label="⬇️ Download CSV",
+        data=csv,
+        file_name="laporan_penjualan.csv",
+        mime="text/csv",
+        use_container_width=True
+    )
+    
+    # =====================================================
+    # RESET DATA
+    # =====================================================
 
-# =====================================================
-# RESET DATA
-# =====================================================
+    st.write("")
+    st.markdown("## 🗑 Reset Semua Data")
 
-st.write("")
-st.markdown("## 🗑 Reset Semua Data")
+    if st.button(
+        "Hapus Semua Data",
+        use_container_width=True
+    ):
 
-if st.button(
-    "Hapus Semua Data",
-    use_container_width=True
-):
+        # SISAKAN HEADER SAJA
+        headers = [
+            "Tanggal",
+            "Nama",
+            "Produk",
+            "Total Qty",
+            "Total Omzet",
+            "Status"
+        ]
 
-    headers = [
-        "Tanggal",
-        "Nama",
-        "Produk",
-        "Total Qty",
-        "Total Omzet",
-        "Status"
-    ]
+        # HAPUS SEMUA DATA
+        sheet.clear()
 
-    sheet.clear()
+        # KEMBALIKAN HEADER
+        sheet.append_row(headers)
 
-    sheet.append_row(headers)
+        st.success("Semua data berhasil dihapus")
 
-    st.success("Semua data berhasil dihapus")
-
-    st.rerun()
+        st.rerun()
